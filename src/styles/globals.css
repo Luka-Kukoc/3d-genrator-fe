@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 225 25% 7%;
+    --foreground: 210 20% 98%;
+    --card: 225 25% 9%;
+    --card-foreground: 210 20% 98%;
+    --popover: 225 25% 9%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 171 86% 47%;
+    --primary-foreground: 225 25% 9%;
+    --secondary: 225 25% 15%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 225 25% 15%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 225 25% 15%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 225 25% 15%;
+    --input: 225 25% 15%;
+    --ring: 171 86% 47%;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.animate-gradient {
+  background-size: 400%;
+  animation: gradient 8s linear infinite;
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
