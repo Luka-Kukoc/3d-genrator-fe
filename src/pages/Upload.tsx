@@ -3,68 +3,59 @@ import { Button } from "../components/ui/Button";
 import { ArrowLeft, Loader2, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { SelectableCard } from "../components/ui/SelectableCard";
+import { scrapeProducts } from "../api/scrape";
+import Loader from "../components/Loader";
 
-// Mock data for the cards
-const MOCK_IMAGES = [
-  {
-    id: "1",
-    name: "Modern Chair",
-    category: "Furniture",
-    imageURL:
-      "https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&q=80&w=400",
-  },
-  {
-    id: "2",
-    name: "Vintage Lamp",
-    category: "Lighting",
-    imageURL:
-      "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&q=80&w=400",
-  },
-  {
-    id: "3",
-    name: "Ceramic Vase",
-    category: "Decoration",
-    imageURL:
-      "https://images.unsplash.com/photo-1578500494198-246f612d3b3d?auto=format&fit=crop&q=80&w=400",
-  },
-  {
-    id: "4",
-    name: "Wall Art",
-    category: "Decoration",
-    imageURL:
-      "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=400",
-  },
-];
+export interface Product {
+  id: string;
+  name: string;
+  price: number;
+  dimensions: string;
+  imageUrl: string;
+  productUrl: string;
+}
 
 export default function Upload() {
   const navigate = useNavigate();
   const [url, setUrl] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedCards, setSelectedCards] = useState<Set<string>>(new Set());
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleScrape = () => {
-    alert(url);
+  const handleScrape = async () => {
+    setIsLoading(true);
+    const products = await scrapeProducts(url);
+    setProducts(products);
+    setIsLoading(false);
   };
 
   const toggleCard = (id: string) => {
-    const newSelected = new Set(selectedCards);
-    if (newSelected.has(id)) {
-      newSelected.delete(id);
-    } else {
-      newSelected.add(id);
-    }
-    setSelectedCards(newSelected);
+    setSelectedCards((prevSelected) => {
+      const newSelected = new Set(prevSelected);
+      if (newSelected.has(id)) {
+        newSelected.delete(id);
+      } else {
+        newSelected.add(id);
+      }
+      return newSelected;
+    });
   };
 
   const handleGenerate = () => {
-    const selectedImages = MOCK_IMAGES.filter((img) =>
-      selectedCards.has(img.id)
+    const selectedImages = products.filter((product) =>
+      selectedCards.has(product.id)
     );
     console.log("Selected images:", selectedImages);
   };
 
   return (
     <div className="min-h-screen p-4">
+      {isLoading && (
+        <div className="flex items-center justify-center h-full">
+          <Loader />
+        </div>
+      )}
       <div className="max-w-6xl mx-auto">
         <Button variant="ghost" onClick={() => navigate("/")} className="mb-8">
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -79,7 +70,7 @@ export default function Upload() {
             type="text"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="Enter image URL"
+            placeholder="Enter category URL"
             className="flex-1 px-4 py-2 rounded-lg bg-secondary text-foreground border border-border focus:outline-none focus:ring-2 focus:ring-primary"
           />
           <Button onClick={handleScrape}>
@@ -94,11 +85,12 @@ export default function Upload() {
             Select Images to Generate
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {MOCK_IMAGES.map((image) => (
+            {products.map((product) => (
               <SelectableCard
-                key={image.id}
-                {...image}
-                selected={selectedCards.has(image.id)}
+                key={product.id}
+                id={product.id}
+                productData={product}
+                selected={selectedCards.has(product.id)}
                 onSelect={toggleCard}
               />
             ))}
