@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { SelectableCard } from "../components/ui/SelectableCard";
 import { scrapeProducts } from "../api/scrape";
 import Loader from "../components/Loader";
+import { saveProducts } from "../api/saveProducts";
 
 export interface Product {
   id: string;
@@ -42,11 +43,12 @@ export default function Upload() {
     });
   };
 
-  const handleGenerate = () => {
-    const selectedImages = products.filter((product) =>
+  const handleGenerate = async () => {
+    const selectedProducts = products.filter((product) =>
       selectedCards.has(product.id)
     );
-    console.log("Selected images:", selectedImages);
+
+    await saveProducts(selectedProducts);
   };
 
   return (
