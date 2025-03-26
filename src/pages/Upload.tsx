@@ -11,9 +11,9 @@ export interface Product {
   id: string;
   name: string;
   price: number;
-  dimensions: string;
+  dimension: string;
   imageUrl: string;
-  productUrl: string;
+  productLink: string;
 }
 
 export default function Upload() {
@@ -48,7 +48,8 @@ export default function Upload() {
       selectedCards.has(product.id)
     );
 
-    await saveProducts(selectedProducts);
+    const productsWithoutId = selectedProducts.map(({ id, ...rest }) => rest);
+    await saveProducts(productsWithoutId);
   };
 
   return (

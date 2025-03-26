@@ -44,12 +44,10 @@ export function SelectableCard({
       <div className="p-4">
         <h3 className="font-semibold">{productData.name}</h3>
         <p className="text-sm text-muted-foreground">{productData.price}e</p>
-        <p className="text-sm text-muted-foreground">
-          {productData.dimensions}
-        </p>
+        <p className="text-sm text-muted-foreground">{productData.dimension}</p>
         <br />
         <p className="text-sm text-muted-foreground">
-          {productData.productUrl}
+          {productData.productLink}
         </p>
       </div>
     </Card>
